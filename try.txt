@@ -1,0 +1,2 @@
+class="weather-table__body"
+class="tabs-panes__pane tabs-panes__pane_active_yes"
