@@ -14,7 +14,7 @@ public class Parser {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
 
 //        File file = new File("krasnodar.xml");
-        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Rostov,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
         InputStream inputStream = url.openStream();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
