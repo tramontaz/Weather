@@ -6,16 +6,19 @@ import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class Parser {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
 
-        File file = new File("krasnodar.xml");
+//        File file = new File("krasnodar.xml");
+        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Krasnodar,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+        InputStream inputStream = url.openStream();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(file);
+        Document document = documentBuilder.parse(inputStream);
 
         //city
         Element cityElement = (Element) document.getElementsByTagName("city").item(0);

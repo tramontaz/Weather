@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Vadim on 7/30/2017.
- */
 public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
     private static final int WINDOW_WIDTH = 400;
     private static final int WINDOW_HEIGHT = 300;
