@@ -6,15 +6,15 @@ public class Weather {
     private String sunrise;
     private String sunset;
     private String country;
-    private Byte temperature;
+    private Float temperature;
     private Byte humidity;
-    private Short pressure;
-    private Byte windSpeed;
+    private Float pressure;
+    private Float windSpeed;
     private String windDirection;
     private String clouds;
     private String lastupdate;
 
-    public Weather(String city, String cityId, Double lon, Double lat, String sunrise, String sunset, String country, Byte temperature, Byte humidity, Short pressure, Byte windSpeed, String windDirection, String clouds, String lastupdate) {
+    public Weather(String city, String cityId, Double lon, Double lat, String sunrise, String sunset, String country, Float temperature, Byte humidity, Float pressure, Float windSpeed, String windDirection, String clouds, String lastupdate) {
         this.city = city;
         this.cityId = cityId;
         this.lon = lon;
@@ -59,7 +59,7 @@ public class Weather {
         return country;
     }
 
-    public Byte getTemperature() {
+    public Float getTemperature() {
         return temperature;
     }
 
@@ -67,11 +67,11 @@ public class Weather {
         return humidity;
     }
 
-    public Short getPressure() {
+    public Float getPressure() {
         return pressure;
     }
 
-    public Byte getWindSpeed() {
+    public Float getWindSpeed() {
         return windSpeed;
     }
 

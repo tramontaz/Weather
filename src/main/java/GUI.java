@@ -6,7 +6,6 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
     private static final int WINDOW_HEIGHT = 300;
     private static final String WINDOW_TITLE = "Weather";
     private final JPanel jPanel = new JPanel(new GridLayout(7, 2));
-
     private final JTextField cityField = new JTextField();
     private final JTextField cityIdField = new JTextField();
     private final JTextField lonField = new JTextField();
