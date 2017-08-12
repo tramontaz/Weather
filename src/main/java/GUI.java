@@ -30,11 +30,13 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
     private final JTextField windSpeedField = new JTextField();
     private final JTextField cloudsField = new JTextField();
     private final JTextField lastUpdateField = new JTextField();
-    private final JTextField textFieldCity = new JTextField();
+    private final JTextField textFieldCity = new JTextField("Krasnodar");
     private final JButton btnGet = new JButton("Get");
-    private URL url;
 
-    GUI(Weather city) {
+    private Document document;
+    private URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Krasnodar,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+
+    GUI() throws Exception {
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -49,11 +51,12 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
         btnGet.addActionListener(this);
         add(inputJPanel, BorderLayout.NORTH);
 
-        fillTheInfoPanel(city);
+        fillTheInfoPanel();
         add(infoJPanel, BorderLayout.CENTER);
     }
 
-    private void fillTheInfoPanel(Weather city) {
+    private void fillTheInfoPanel() throws Exception {
+        Weather city = getWeather(url);
         //cityField
         infoJPanel.add(cityField);
         cityField.setText("City: " + city.getCity());
@@ -123,7 +126,6 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
                 stackTraceElements[0].toString();
         JOptionPane.showMessageDialog(null, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
-
     }
 
     @Override
@@ -137,15 +139,16 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
         else throw new RuntimeException("Неизвестный src = " + src);
     }
 
-    public void updateURL(String city) throws Exception {
+    private void updateURL(String city) throws Exception {
         url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + ",ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
-        fillTheInfoPanel(getWeather(url));
+        fillTheInfoPanel();
     }
-    public Weather getWeather(URL url) throws Exception{
+
+    private Weather getWeather(URL url) throws Exception{
         InputStream inputStream = url.openStream();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(inputStream);
+        document = documentBuilder.parse(inputStream);
         return Parser.parse(document);
     }
 }

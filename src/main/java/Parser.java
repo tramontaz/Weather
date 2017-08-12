@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 public class Parser {
 
     public static Weather parse(Document document){
-        Weather krasnodar;
+        Weather someCity;
         //city
         Element cityElement = (Element) document.getElementsByTagName("city").item(0);
         String city = cityElement.getAttribute("name");
@@ -42,7 +42,7 @@ public class Parser {
         Element lastUpdateElement = (Element) document.getElementsByTagName("lastupdate").item(0);
         String lastupdate = lastUpdateElement.getAttribute("value");
 
-        return krasnodar = new Weather(city, cityElement.getAttribute("id"), lon, lat, sunrise, sunset, country, temperature, humidity, pressure, windSpeed, windDirection, clouds, lastupdate);
+        return someCity = new Weather(city, cityElement.getAttribute("id"), lon, lat, sunrise, sunset, country, temperature, humidity, pressure, windSpeed, windDirection, clouds, lastupdate);
     }
 }
 

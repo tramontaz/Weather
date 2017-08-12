@@ -11,18 +11,22 @@ import java.net.URL;
 
 public class Main {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-
-        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
-        InputStream inputStream = url.openStream();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(inputStream);
-        final Weather city = Parser.parse(document);
+//
+//        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+//        InputStream inputStream = url.openStream();
+//        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+//        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+//        Document document = documentBuilder.parse(inputStream);
+//        final Weather city = Parser.parse(document);
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI(city);
+                try {
+                    new GUI();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
