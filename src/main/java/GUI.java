@@ -1,11 +1,21 @@
-import javax.swing.*;
-import java.awt.*;
+import org.w3c.dom.Document;
 
-public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
+import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, ActionListener {
     private static final int WINDOW_WIDTH = 400;
     private static final int WINDOW_HEIGHT = 300;
     private static final String WINDOW_TITLE = "Weather";
-    private final JPanel jPanel = new JPanel(new GridLayout(7, 2));
+    private final JPanel infoJPanel = new JPanel(new GridLayout(7, 2));
+    private final JPanel inputJPanel = new JPanel(new GridLayout(1, 2));
     private final JTextField cityField = new JTextField();
     private final JTextField cityIdField = new JTextField();
     private final JTextField lonField = new JTextField();
@@ -20,8 +30,11 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
     private final JTextField windSpeedField = new JTextField();
     private final JTextField cloudsField = new JTextField();
     private final JTextField lastUpdateField = new JTextField();
+    private final JTextField textFieldCity = new JTextField();
+    private final JButton btnGet = new JButton("Get");
+    private URL url;
 
-    protected GUI(Weather city) {
+    GUI(Weather city) {
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -29,49 +42,74 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
         setResizable(false);
         setTitle(WINDOW_TITLE);
         setVisible(true);
+
+        inputJPanel.add(textFieldCity);
+        inputJPanel.add(btnGet);
+        textFieldCity.addActionListener(this);
+        btnGet.addActionListener(this);
+        add(inputJPanel, BorderLayout.NORTH);
+
+        fillTheInfoPanel(city);
+        add(infoJPanel, BorderLayout.CENTER);
+    }
+
+    private void fillTheInfoPanel(Weather city) {
+        //cityField
+        infoJPanel.add(cityField);
         cityField.setText("City: " + city.getCity());
         cityField.setEditable(false);
-        jPanel.add(cityField);
-        cityIdField.setText("City id: " + city.getCityId());
+        //cityIdField
+        infoJPanel.add(cityIdField);
+        cityIdField.setText("City ID: " + city.getCityId());
         cityIdField.setEditable(false);
-        jPanel.add(cityIdField);
+        //latField
         latField.setText("Latitude: " + city.getLat());
         latField.setEditable(false);
-        jPanel.add(latField);
+        infoJPanel.add(latField);
+        //lonField
         lonField.setText("Longitude: " + city.getLon());
         lonField.setEditable(false);
-        jPanel.add(lonField);
+        infoJPanel.add(lonField);
+        //sunriseField
         sunriseField.setText("Sunrise: " + city.getSunrise());
         sunriseField.setEditable(false);
-        jPanel.add(sunriseField);
+        infoJPanel.add(sunriseField);
+        //sunsetField
         sunsetField.setText("Sunset: " + city.getSunset());
         sunsetField.setEditable(false);
-        jPanel.add(sunsetField);
+        infoJPanel.add(sunsetField);
+        //countryField
         countryField.setText("Country zone: " + city.getCountry());
         countryField.setEditable(false);
-        jPanel.add(countryField);
+        infoJPanel.add(countryField);
+        //temperatureField
         temperatureField.setText("temperature: " + city.getTemperature());
         temperatureField.setEditable(false);
-        jPanel.add(temperatureField);
+        infoJPanel.add(temperatureField);
+        //humidityField
         humidityField.setText("humidity: " + city.getHumidity());
         humidityField.setEditable(false);
-        jPanel.add(humidityField);
+        infoJPanel.add(humidityField);
+        //pressureField
         pressureField.setText("pressure: " + city.getPressure());
         pressureField.setEditable(false);
-        jPanel.add(pressureField);
+        infoJPanel.add(pressureField);
+        //windDirection
         windDirection.setText("Wind Direction: " + city.getWindDirection());
         windDirection.setEditable(false);
-        jPanel.add(windDirection);
+        infoJPanel.add(windDirection);
+        //windSpeedField
         windSpeedField.setText("Wind Speed: " + city.getWindSpeed());
         windSpeedField.setEditable(false);
-        jPanel.add(windSpeedField);
+        infoJPanel.add(windSpeedField);
+        //cloudsField
         cloudsField.setText("clouds: " + city.getClouds());
         cloudsField.setEditable(false);
-        jPanel.add(cloudsField);
+        infoJPanel.add(cloudsField);
+        //lastUpdateField
         lastUpdateField.setText("Last Update: " + city.getLastupdate());
         lastUpdateField.setEditable(false);
-        jPanel.add(lastUpdateField);
-        add(jPanel);
+        infoJPanel.add(lastUpdateField);
     }
 
 
@@ -86,5 +124,28 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler {
         JOptionPane.showMessageDialog(null, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object src = e.getSource();
+        if (src == btnGet || src == textFieldCity) try {
+            updateURL(textFieldCity.getText());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        else throw new RuntimeException("Неизвестный src = " + src);
+    }
+
+    public void updateURL(String city) throws Exception {
+        url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + ",ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+        fillTheInfoPanel(getWeather(url));
+    }
+    public Weather getWeather(URL url) throws Exception{
+        InputStream inputStream = url.openStream();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(inputStream);
+        return Parser.parse(document);
     }
 }

@@ -1,25 +1,10 @@
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 public class Parser {
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
 
-//        File file = new File("krasnodar.xml");
-        URL url = new URL(" http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
-        InputStream inputStream = url.openStream();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(inputStream);
-
+    public static Weather parse(Document document){
+        Weather krasnodar;
         //city
         Element cityElement = (Element) document.getElementsByTagName("city").item(0);
         String city = cityElement.getAttribute("name");
@@ -57,15 +42,7 @@ public class Parser {
         Element lastUpdateElement = (Element) document.getElementsByTagName("lastupdate").item(0);
         String lastupdate = lastUpdateElement.getAttribute("value");
 
-
-        final Weather krasnodar = new Weather(city, cityElement.getAttribute("id"), lon, lat, sunrise, sunset, country, temperature, humidity, pressure, windSpeed, windDirection, clouds, lastupdate);
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI(krasnodar);
-            }
-        });
+        return krasnodar = new Weather(city, cityElement.getAttribute("id"), lon, lat, sunrise, sunset, country, temperature, humidity, pressure, windSpeed, windDirection, clouds, lastupdate);
     }
 }
 
