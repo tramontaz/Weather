@@ -1,0 +1,7 @@
+*.iml
+*.zip
+**/.idea/*
+**/out/*
+**/META-INF/*
+no_git/
+log.txt
