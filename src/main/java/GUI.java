@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, ActionListener {
@@ -34,9 +33,9 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
     private final JButton btnGet = new JButton("Get");
 
     private Document document;
-    private URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Krasnodar,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+    private URL url;
 
-    GUI() throws Exception {
+    GUI() {
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -51,80 +50,89 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
         btnGet.addActionListener(this);
         add(inputJPanel, BorderLayout.NORTH);
 
-        fillTheInfoPanel();
+        assembleInfoPanel();
         add(infoJPanel, BorderLayout.CENTER);
+
+        try {
+            url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Krasnodar,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
+            fillTheInfoPanel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void assembleInfoPanel() {
+        infoJPanel.add(cityField);
+        cityField.setEditable(false);
+
+        infoJPanel.add(cityIdField);
+        cityIdField.setEditable(false);
+
+        infoJPanel.add(latField);
+        latField.setEditable(false);
+
+        infoJPanel.add(lonField);
+        lonField.setEditable(false);
+
+        infoJPanel.add(sunriseField);
+        sunriseField.setEditable(false);
+
+        infoJPanel.add(sunsetField);
+        sunsetField.setEditable(false);
+
+        infoJPanel.add(countryField);
+        countryField.setEditable(false);
+
+        infoJPanel.add(temperatureField);
+        temperatureField.setEditable(false);
+
+        infoJPanel.add(humidityField);
+        humidityField.setEditable(false);
+
+        infoJPanel.add(pressureField);
+        pressureField.setEditable(false);
+
+        infoJPanel.add(windDirection);
+        windDirection.setEditable(false);
+
+        infoJPanel.add(windSpeedField);
+        windSpeedField.setEditable(false);
+
+        infoJPanel.add(cloudsField);
+        cloudsField.setEditable(false);
+
+
+        infoJPanel.add(lastUpdateField);
+        lastUpdateField.setEditable(false);
     }
 
     private void fillTheInfoPanel() throws Exception {
         Weather city = getWeather(url);
-        //cityField
-        infoJPanel.add(cityField);
         cityField.setText("City: " + city.getCity());
-        cityField.setEditable(false);
-        //cityIdField
-        infoJPanel.add(cityIdField);
         cityIdField.setText("City ID: " + city.getCityId());
-        cityIdField.setEditable(false);
-        //latField
         latField.setText("Latitude: " + city.getLat());
-        latField.setEditable(false);
-        infoJPanel.add(latField);
-        //lonField
         lonField.setText("Longitude: " + city.getLon());
-        lonField.setEditable(false);
-        infoJPanel.add(lonField);
-        //sunriseField
         sunriseField.setText("Sunrise: " + city.getSunrise());
-        sunriseField.setEditable(false);
-        infoJPanel.add(sunriseField);
-        //sunsetField
         sunsetField.setText("Sunset: " + city.getSunset());
-        sunsetField.setEditable(false);
-        infoJPanel.add(sunsetField);
-        //countryField
         countryField.setText("Country zone: " + city.getCountry());
-        countryField.setEditable(false);
-        infoJPanel.add(countryField);
-        //temperatureField
         temperatureField.setText("temperature: " + city.getTemperature());
-        temperatureField.setEditable(false);
-        infoJPanel.add(temperatureField);
-        //humidityField
         humidityField.setText("humidity: " + city.getHumidity());
-        humidityField.setEditable(false);
-        infoJPanel.add(humidityField);
-        //pressureField
         pressureField.setText("pressure: " + city.getPressure());
-        pressureField.setEditable(false);
-        infoJPanel.add(pressureField);
-        //windDirection
         windDirection.setText("Wind Direction: " + city.getWindDirection());
-        windDirection.setEditable(false);
-        infoJPanel.add(windDirection);
-        //windSpeedField
         windSpeedField.setText("Wind Speed: " + city.getWindSpeed());
-        windSpeedField.setEditable(false);
-        infoJPanel.add(windSpeedField);
-        //cloudsField
         cloudsField.setText("clouds: " + city.getClouds());
-        cloudsField.setEditable(false);
-        infoJPanel.add(cloudsField);
-        //lastUpdateField
         lastUpdateField.setText("Last Update: " + city.getLastupdate());
-        lastUpdateField.setEditable(false);
-        infoJPanel.add(lastUpdateField);
     }
 
 
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        e.getStackTrace();
         StackTraceElement[] stackTraceElements = e.getStackTrace();
         String msg;
         if (stackTraceElements.length == 0) msg = "Пустой stackTraceElements";
         else msg = e.getClass().getCanonicalName() + ": " + e.getMessage() + " \n" +
                 stackTraceElements[0].toString();
-        JOptionPane.showMessageDialog(null, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, msg, "Exception:", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
     }
 
