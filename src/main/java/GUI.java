@@ -32,9 +32,6 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
     private final JTextField textFieldCity = new JTextField("Krasnodar");
     private final JButton btnGet = new JButton("Get");
 
-    private Document document;
-    private URL url;
-
     GUI() {
         Thread.setDefaultUncaughtExceptionHandler(this);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -52,13 +49,7 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
 
         assembleInfoPanel();
         add(infoJPanel, BorderLayout.CENTER);
-
-        try {
-            url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Krasnodar,ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
-            fillTheInfoPanel();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getCityWeather("Krasnodar");
     }
 
     private void assembleInfoPanel() {
@@ -101,27 +92,25 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
         infoJPanel.add(cloudsField);
         cloudsField.setEditable(false);
 
-
         infoJPanel.add(lastUpdateField);
         lastUpdateField.setEditable(false);
     }
 
-    private void fillTheInfoPanel() throws Exception {
-        Weather city = getWeather(url);
-        cityField.setText("City: " + city.getCity());
-        cityIdField.setText("City ID: " + city.getCityId());
-        latField.setText("Latitude: " + city.getLat());
-        lonField.setText("Longitude: " + city.getLon());
-        sunriseField.setText("Sunrise: " + city.getSunrise());
-        sunsetField.setText("Sunset: " + city.getSunset());
-        countryField.setText("Country zone: " + city.getCountry());
-        temperatureField.setText("temperature: " + city.getTemperature());
-        humidityField.setText("humidity: " + city.getHumidity());
-        pressureField.setText("pressure: " + city.getPressure());
-        windDirection.setText("Wind Direction: " + city.getWindDirection());
-        windSpeedField.setText("Wind Speed: " + city.getWindSpeed());
-        cloudsField.setText("clouds: " + city.getClouds());
-        lastUpdateField.setText("Last Update: " + city.getLastupdate());
+    private void fillTheInfoPanel(Weather weather) {
+        cityField.setText("City: " + weather.getCity());
+        cityIdField.setText("City ID: " + weather.getCityId());
+        latField.setText("Latitude: " + weather.getLat());
+        lonField.setText("Longitude: " + weather.getLon());
+        sunriseField.setText("Sunrise: " + weather.getSunrise());
+        sunsetField.setText("Sunset: " + weather.getSunset());
+        countryField.setText("Country zone: " + weather.getCountry());
+        temperatureField.setText("temperature: " + weather.getTemperature());
+        humidityField.setText("humidity: " + weather.getHumidity());
+        pressureField.setText("pressure: " + weather.getPressure());
+        windDirection.setText("Wind Direction: " + weather.getWindDirection());
+        windSpeedField.setText("Wind Speed: " + weather.getWindSpeed());
+        cloudsField.setText("clouds: " + weather.getClouds());
+        lastUpdateField.setText("Last Update: " + weather.getLastupdate());
     }
 
 
@@ -139,24 +128,25 @@ public class GUI extends JFrame implements Thread.UncaughtExceptionHandler, Acti
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
-        if (src == btnGet || src == textFieldCity) try {
-            updateURL(textFieldCity.getText());
-        } catch (Exception e1) {
-            e1.printStackTrace();
+        if (src == btnGet || src == textFieldCity) {
+            getCityWeather(textFieldCity.getText());
+        }  else throw new RuntimeException("Неизвестный src = " + src);
+    }
+
+    private void getCityWeather(String city) {
+        try {
+            fillTheInfoPanel(getWeather(city));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ошибка получения данных: " + e, "Ошибка получения данных о городе '" + city + "'", JOptionPane.ERROR_MESSAGE);
         }
-        else throw new RuntimeException("Неизвестный src = " + src);
     }
 
-    private void updateURL(String city) throws Exception {
-        url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + ",ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
-        fillTheInfoPanel();
-    }
-
-    private Weather getWeather(URL url) throws Exception{
+    private Weather getWeather(String city) throws Exception {
+        URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + ",ru&units=metric&mode=xml&appid=6d0f23a5071298a2af64c8245db45058");
         InputStream inputStream = url.openStream();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        document = documentBuilder.parse(inputStream);
+        Document document = documentBuilder.parse(inputStream);
         return Parser.parse(document);
     }
 }
